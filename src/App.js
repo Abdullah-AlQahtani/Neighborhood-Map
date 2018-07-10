@@ -123,7 +123,7 @@ class App extends Component {
         let newData = [...this.state.data,[responseJson,responseJson[2][0],responseJson[3][0]]]
         this.updateData(newData)
       }).catch(error =>
-      console.error(error)      
+      console.log(error)      
       )
     })
   }
