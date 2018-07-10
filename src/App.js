@@ -153,7 +153,7 @@ class App extends Component {
     showingLocations.sort(sortBy('title'))
     return (
       request ? (
-		<div id="mySidenav" class="sidenav">
+	  <div>
         <nav className="nav">
 		<center>
         <span id="subject" tabIndex='0'>Saudi Arabia - Eastern Province Universities</span>
@@ -163,8 +163,6 @@ class App extends Component {
         <div id="map-container" role="application" tabIndex="-1">
         <div id="map" role="region" aria-label="Eastern Province Universities"></div>
         </div>
-     // ListView
-
       <div className='listView'>
       <input id="textToFilter" className='form-control' type='text'
       placeholder=' search location ..'
@@ -196,5 +194,5 @@ class App extends Component {
   }
 	// Load Google Map API Key
   export default scriptLoader(
-    [`https://maps.googleapis.com/maps/api/js?key=AIzaSyAD7SP0433vy7OGi67irjeNfbMNbAJCA9s&callback=initMap`]
+    [`https://maps.googleapis.com/maps/api/js?key=AIzaSyAD7SP0433vy7OGi67irjeNfbMNbAJCA9s`]
     )(App);
