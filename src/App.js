@@ -6,6 +6,7 @@ import sortBy from 'sort-by';
 import fetchJsonp from 'fetch-jsonp';
 import { allLocations } from './locations.js';
 
+
 let markers = [];
 let infoWindows = [];
 
@@ -17,6 +18,8 @@ class App extends Component {
       map: {},
       query: '',
       request: true,
+	  error: null,
+      errorInfo: null,
       selectedMarker:'',
       data:[]
     }
@@ -29,6 +32,14 @@ class App extends Component {
   updateData = (newData) => {
     this.setState({
       data:newData,
+    });
+  }
+  
+    componentDidCatch(error, errorInfo) {
+    // Catch errors in any child components and re-renders with an error message
+    this.setState({
+      error: error,
+      errorInfo: errorInfo
     });
   }
 
@@ -141,9 +152,25 @@ class App extends Component {
  }
 
  render() {
+
   const {locations, query, request} = this.state;
     //filter ListItems 
     let showingLocations
+  
+  if (this.state.error) {
+      // Fallback UI if an error occurs
+      return (
+        <div>
+          <h2>{"Oh-no! Something went wrong"}</h2>
+          <p className="red">
+            {this.state.error && this.state.error.toString()}
+          </p>
+          <div>{"Component Stack Error Details: "}</div>
+          <p>{this.state.errorInfo.componentStack}</p>
+        </div>
+      );
+    }
+  
     if (query){
       const match = new RegExp(escapeRegExp(query),'i')
       showingLocations = locations.filter((location)=> match.test(location.title))
