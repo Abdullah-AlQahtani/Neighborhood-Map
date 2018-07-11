@@ -59,6 +59,7 @@ class App extends Component {
     markers.forEach(mark => { mark.setMap(null) });
     markers = [];
     infoWindows = [];
+	// eslint-disable-next-line
     showingLocations.map((marker,index)=> {
     let getData = this.state.data.filter((single)=>marker.title === single[0][0]).map(item2=>
       {if (item2.length===0)
@@ -123,7 +124,7 @@ class App extends Component {
         let newData = [...this.state.data,[responseJson,responseJson[2][0],responseJson[3][0]]]
         this.updateData(newData)
       }).catch(error =>
-      console.log(error)      
+      		console.log("Error: Unfortunately, Wikipedia is unavailable. Please try again later.")     
       )
     })
   }
