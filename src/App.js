@@ -39,7 +39,6 @@ class App extends Component {
   componentWillReceiveProps({isScriptLoadSucceed}){
     window.gm_authFailure = function() {
       console.log('Error: Google maps failed to load!');
-      alert('Error: Google maps failed to load!');
     }
  if (isScriptLoadSucceed) {
    const map = new window.google.maps.Map(document.getElementById('map'), {
@@ -47,7 +46,6 @@ class App extends Component {
      center: new window.google.maps.LatLng(26.189041, 49.810356),
    });
    this.setState({map:map});
-   this.setState({request: true})
  }
  else {
    console.log("Error: Google maps failed to load!");
@@ -91,7 +89,6 @@ class App extends Component {
     <h4>${marker.title}</h4>
     <p>${getData}</p>
     <a href=${getLink}>Click Here For More Info</a>
-
     </div>`
       //Add content to infoWindows
       let addInfoWindow= new window.google.maps.InfoWindow({
