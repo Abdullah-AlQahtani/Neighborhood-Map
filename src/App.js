@@ -38,7 +38,7 @@ class App extends Component {
 
   componentWillReceiveProps({isScriptLoadSucceed}){
     window.gm_authFailure = function() {
-      console.log('Error: Google maps failed to load!');
+      alert('Error: Google maps failed to load!');
     }
  if (isScriptLoadSucceed) {
    const map = new window.google.maps.Map(document.getElementById('map'), {
@@ -46,9 +46,10 @@ class App extends Component {
      center: new window.google.maps.LatLng(26.189041, 49.810356),
    });
    this.setState({map:map});
+   this.setState({request: true})
  }
  else {
-   console.log("Error: Google maps failed to load!");
+   alert('Error: Google maps failed to load!');
    this.setState({request: false})
  }
 }
@@ -124,13 +125,16 @@ class App extends Component {
 
   componentDidMount(){
     // Wikipedia API
+    window.gm_authFailure = function() {
+      alert('Error: Unfortunately, Wikipedia is unavailable. Please try again later. ');
+    }
     this.state.locations.map((location,index)=>{
       return fetchJsonp(`https://en.wikipedia.org/w/api.php?action=opensearch&search=${location.title}&format=json&callback=wikiCallback`)
       .then(response => response.json()).then((responseJson) => {
         let newData = [...this.state.data,[responseJson,responseJson[2][0],responseJson[3][0]]]
         this.updateData(newData)
       }).catch(error =>
-      		console.log("Error: Unfortunately, Wikipedia is unavailable. Please try again later.")
+      		alert("Error: Unfortunately, Wikipedia is unavailable. Please try again later.")
       )
     })
   }
@@ -161,6 +165,7 @@ class App extends Component {
     }
     showingLocations.sort(sortBy('title'))
     return (
+
       request ? (
 	  <div>
         <nav className="nav">
@@ -203,5 +208,5 @@ class App extends Component {
   }
 	// Load Google Map API Key
   export default scriptLoader(
-    [`https://maps.googleapis.com/maps/api/js?key=AIzaSyAD7SP0433vy7OGi67irjeNfbMNbAJCA9s&v=3.exp&libraries=geometry,drawing,places`]
-    )(App);
+      [`https://maps.googleapis.com/maps/api/js?key=AIzaSyAD7SP0433vy7OGi67irjeNfbMNbAJCA9s&v=3.exp&libraries=geometry,drawing,places`]
+      )(App);
