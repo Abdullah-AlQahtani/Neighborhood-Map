@@ -34,28 +34,26 @@ class App extends Component {
       data:newData,
     });
   }
-  
-    componentDidCatch(error, errorInfo) {
-    // Catch errors in any child components and re-renders with an error message
-    this.setState({
-      error: error,
-      errorInfo: errorInfo
-    });
-  }
+
 
   componentWillReceiveProps({isScriptLoadSucceed}){
-    if (isScriptLoadSucceed) {
-      const map = new window.google.maps.Map(document.getElementById('map'), {
-        zoom: 13,
-        center: new window.google.maps.LatLng(26.189041, 49.810356),
-      });
-      this.setState({map:map});
+    window.gm_authFailure = function() {
+      console.log('Error: Google maps failed to load!');
+      alert('Error: Google maps failed to load!');
     }
-    else {
-      console.log("Error:Can't Load Google Map!");
-      this.setState({request: false})
-    }
-  }
+ if (isScriptLoadSucceed) {
+   const map = new window.google.maps.Map(document.getElementById('map'), {
+     zoom: 13,
+     center: new window.google.maps.LatLng(26.189041, 49.810356),
+   });
+   this.setState({map:map});
+   this.setState({request: true})
+ }
+ else {
+   console.log("Error: Google maps failed to load!");
+   this.setState({request: false})
+ }
+}
 
   componentDidUpdate(){
     const {locations, query,map} = this.state;
@@ -93,7 +91,7 @@ class App extends Component {
     <h4>${marker.title}</h4>
     <p>${getData}</p>
     <a href=${getLink}>Click Here For More Info</a>
-    
+
     </div>`
       //Add content to infoWindows
       let addInfoWindow= new window.google.maps.InfoWindow({
@@ -116,7 +114,7 @@ class App extends Component {
           if (addmarkers.getAnimation() !== null) {
             addmarkers.setAnimation(null);
           } else {
-            //Marker Animation 
+            //Marker Animation
             addmarkers.setAnimation(window.google.maps.Animation.BOUNCE);
             setTimeout(() => {addmarkers.setAnimation(null);}, 400)
           }
@@ -135,7 +133,7 @@ class App extends Component {
         let newData = [...this.state.data,[responseJson,responseJson[2][0],responseJson[3][0]]]
         this.updateData(newData)
       }).catch(error =>
-      		console.log("Error: Unfortunately, Wikipedia is unavailable. Please try again later.")     
+      		console.log("Error: Unfortunately, Wikipedia is unavailable. Please try again later.")
       )
     })
   }
@@ -154,23 +152,9 @@ class App extends Component {
  render() {
 
   const {locations, query, request} = this.state;
-    //filter ListItems 
+    //filter ListItems
     let showingLocations
-  
-  if (this.state.error) {
-      // Fallback UI if an error occurs
-      return (
-        <div>
-          <h2>{"Oh-no! Something went wrong"}</h2>
-          <p className="red">
-            {this.state.error && this.state.error.toString()}
-          </p>
-          <div>{"Component Stack Error Details: "}</div>
-          <p>{this.state.errorInfo.componentStack}</p>
-        </div>
-      );
-    }
-  
+
     if (query){
       const match = new RegExp(escapeRegExp(query),'i')
       showingLocations = locations.filter((location)=> match.test(location.title))
@@ -200,7 +184,7 @@ class App extends Component {
       aria-labelledby="Search For a University"
       tabIndex="1"/>
       <ul aria-labelledby="list of Universities" tabIndex="1">
-    
+
     {showingLocations.map((getLocation, index)=>
       <li key={index} tabIndex={index+2}
       area-labelledby={`View details for ${getLocation.title}`}
@@ -213,7 +197,7 @@ class App extends Component {
       </div>
       ) : (
       <div>
-      <h1>Error:Can't Load Your Google Map</h1>
+      <h1>Error:Cant Load Your Google Map</h1>
       </div>
 
       )
@@ -222,5 +206,5 @@ class App extends Component {
   }
 	// Load Google Map API Key
   export default scriptLoader(
-    [`https://maps.googleapis.com/maps/api/js?key=AIzaSyAD7SP0433vy7OGi67irjeNfbMNbAJCA9s&v=3.exp&libraries=geometry,drawing,places`]
-    )(App);
+      [`https://maps.googleapis.com/maps/api/js?key=AIzaSyAD7SP0433vy7OGi67irjeNfbMNbAJCA9s&v=3.exp&libraries=geometry,drawing,places`]
+      )(App);
