@@ -18,8 +18,7 @@ class App extends Component {
       map: {},
       query: '',
       request: true,
-	  error: null,
-      errorInfo: null,
+      error: false,
       selectedMarker:'',
       data:[]
     }
@@ -85,16 +84,21 @@ class App extends Component {
         else
           return 'https://www.wikipedia.org'
       })
-    let content =
-    `<div tabIndex="0" class="infoWindow">
-    <h4>${marker.title}</h4>
-    <p>${getData}</p>
-    <a href=${getLink}>Click Here For More Info</a>
-    </div>`
+	  
+      let content = 
+	  `<div tabIndex="0" class="infoWindow">
+      <h4>${marker.title}</h4>
+      <p>${getData}</p>
+      <a href=${getLink}>Click Here For More Info</a>
+      </div>`
+	  
+		
+
       //Add content to infoWindows
-      let addInfoWindow= new window.google.maps.InfoWindow({
-        content: content,
+      let addInfoWindow = new window.google.maps.InfoWindow({
+        content: content
       });
+
       //Extend map bound
       let bounds = new window.google.maps.LatLngBounds();
       //Create marker
@@ -124,20 +128,18 @@ class App extends Component {
   }
 
   componentDidMount(){
-    // Wikipedia API
-    window.gm_authFailure = function() {
-      alert('Error: Unfortunately, Wikipedia is unavailable. Please try again later. ');
-    }
-    this.state.locations.map((location,index)=>{
-      return fetchJsonp(`https://en.wikipedia.org/w/api.php?action=opensearch&search=${location.title}&format=json&callback=wikiCallback`)
-      .then(response => response.json()).then((responseJson) => {
-        let newData = [...this.state.data,[responseJson,responseJson[2][0],responseJson[3][0]]]
-        this.updateData(newData)
-      }).catch(error =>
-      		alert("Error: Unfortunately, Wikipedia is unavailable. Please try again later.")
-      )
-    })
-  }
+   // Wikipedia API
+   this.state.locations.map((location,index)=>{
+     return fetchJsonp(`https://en.wikipedia.org/w/api.php?action=opensearch&search=${location.title}&format=json&callback=wikiCallback`)
+     .then(response => response.json()).then((responseJson) => {
+       let newData = [...this.state.data,[responseJson,responseJson[2][0],responseJson[3][0]]]
+       this.updateData(newData)
+     }).catch(error =>
+       console.log("Error: Unfortunately, Wikipedia is unavailable. Please try again later.")
+	 )
+	 
+   })
+ }
 
   listItem = (item, event) => {
     let selected = markers.filter((currentOne)=> currentOne.name === item.title)
@@ -155,7 +157,7 @@ class App extends Component {
   const {locations, query, request} = this.state;
     //filter ListItems
     let showingLocations
-
+	
     if (query){
       const match = new RegExp(escapeRegExp(query),'i')
       showingLocations = locations.filter((location)=> match.test(location.title))
